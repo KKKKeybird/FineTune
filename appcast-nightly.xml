@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>FineTune Nightly</title>
+    <link>https://github.com/KKKKeybird/FineTune/releases</link>
+    <description>FineTune community nightly builds</description>
+    <language>en</language>
+  </channel>
+</rss>
