@@ -18,6 +18,31 @@ nonisolated extension AudioObjectID {
             defaultValue: AudioObjectID.unknown
         )
     }
+
+    /// Allows this process to participate in idle sleep even while its Process Taps
+    /// keep Core Audio I/O active. The HAL otherwise creates a
+    /// PreventUserIdleSystemSleep assertion on behalf of any audio client with an
+    /// active IOProc, even when the routed application is silent.
+    static func setSleepingAllowedDuringAudioIO(_ allowed: Bool) throws {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertySleepingIsAllowed,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        var value: UInt32 = allowed ? 1 : 0
+        let size = UInt32(MemoryLayout<UInt32>.size)
+        let status = AudioObjectSetPropertyData(
+            AudioObjectID(kAudioObjectSystemObject),
+            &address,
+            0,
+            nil,
+            size,
+            &value
+        )
+        guard status == noErr else {
+            throw NSError(domain: NSOSStatusErrorDomain, code: Int(status))
+        }
+    }
 }
 
 // MARK: - Default Device

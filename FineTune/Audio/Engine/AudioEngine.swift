@@ -190,6 +190,21 @@ final class AudioEngine {
         self.volumeState = VolumeState(settingsManager: manager)
         self.isAliveCheck = isAlive ?? { $0.isDeviceAlive() }
 
+        // FineTune's Process Taps remain active while an app's audio stream exists,
+        // including when that stream is silent or paused. Without this public HAL
+        // opt-in, coreaudiod treats FineTune as an active audio client and holds a
+        // PreventUserIdleSystemSleep assertion indefinitely (issue #465). This only
+        // affects FineTune's own HAL client; apps that are actively playing audio
+        // retain their own sleep assertions.
+        if startMonitorsAutomatically {
+            do {
+                try AudioObjectID.setSleepingAllowedDuringAudioIO(true)
+                logger.info("Allowed idle sleep during inactive Process Tap audio I/O")
+            } catch {
+                logger.error("Failed to allow idle sleep during Process Tap audio I/O: \(error.localizedDescription)")
+            }
+        }
+
         // If a custom deviceProvider is given, use it directly.
         // Otherwise create a real AudioDeviceMonitor (needed by DeviceVolumeMonitor and default tap factory).
         let realDeviceMonitor: AudioDeviceMonitor?
