@@ -4,8 +4,9 @@ This is an automated community-nightly prerelease based on upstream FineTune.
 
 ## Verification
 
-- Debug build and unit tests are run before every nightly build.
-- The package is built from the exact commit identified by this release tag.
+- CI build and unit tests must pass for the pushed commit before this release is created.
+- The version and tag identify the exact source commit used for this package.
+- Rerunning CI for the same commit does not create a duplicate release.
 - Hardware-specific audio behavior is not automatically certified by CI.
 
 ## Included changes
@@ -25,5 +26,4 @@ release.
 
 The app uses the temporary identity `io.github.kkkkeybird.FineTune.nightly` and
 the `finetune-nightly://` URL scheme so it can coexist with the upstream app.
-Sparkle automatic update checks are disabled until a dedicated nightly feed and
-signing key are configured.
+Sparkle automatic update checks are disabled because updates are managed by Homebrew.
